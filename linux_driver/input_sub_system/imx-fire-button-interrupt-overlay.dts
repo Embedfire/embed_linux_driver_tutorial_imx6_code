@@ -11,9 +11,9 @@
  /plugin/;
 
 
-#include "imx6ul-pinfunc.h"
-#include "./dt-bindings/interrupt-controller/irq.h"
-#include "./dt-bindings/gpio/gpio.h"
+#include "../imx6ul-pinfunc.h"
+#include "dt-bindings/interrupt-controller/irq.h"
+#include "dt-bindings/gpio/gpio.h"
 
  / {
      fragment@0 {

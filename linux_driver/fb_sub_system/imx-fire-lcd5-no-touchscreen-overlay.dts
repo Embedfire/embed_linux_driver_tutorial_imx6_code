@@ -9,9 +9,9 @@
 
 
 
-#include "imx6ul-pinfunc.h"
-#include "imx6ul-pinfunc.h"
-#include "imx6ull-pinfunc-snvs.h"
+#include "../imx6ul-pinfunc.h"
+#include "../imx6ul-pinfunc.h"
+#include "../imx6ull-pinfunc-snvs.h"
 #include "dt-bindings/gpio/gpio.h"
 
 

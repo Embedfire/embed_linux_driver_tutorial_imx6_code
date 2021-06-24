@@ -7,11 +7,12 @@
  * version : A001
  */
 
- /dts-v1/;
- /plugin/;
-#include "imx6ul-pinfunc.h"
+#include "../imx6ul-pinfunc.h"
 
- / {
+/dts-v1/;
+/plugin/;
+
+/ {
      fragment@0 {
          target = <&ecspi1>;
          __overlay__ { 
@@ -20,7 +21,8 @@
 			pinctrl-names = "default";
 			pinctrl-0 = <&pinctrl_ecspi1>;
 			status = "okay";
-
+			#address-cells = <1>;
+			#size-cells = <0>;
 	        ecspi_oled@0 {
 				d_c_control_pin = <&gpio4 24 0>;
 				compatible = "fire,ecspi_oled";
@@ -44,4 +46,4 @@
         	}; 
          };
      };
- };
+};

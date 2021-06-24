@@ -8,6 +8,10 @@
  */
  /dts-v1/;
  /plugin/;
+
+ #include "../imx6ul-pinfunc.h"
+ #include "dt-bindings/gpio/gpio.h"
+
  / {
         fragment@0 {
             target-path = "/";
@@ -17,7 +21,6 @@
                 	#size-cells = <1>;
                 	compatible = "fire,rgb_led";
                 	/*红灯节点*/
-                	ranges;
                 	rgb_led_red@0x020C406C{
                 		compatible = "fire,rgb_led_red";
                 		reg = <0x020C406C 0x00000004
