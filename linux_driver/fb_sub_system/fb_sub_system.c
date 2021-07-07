@@ -166,13 +166,18 @@ static int lcd_driver_probe(struct platform_device *pdev)
 	elcdif = devm_ioremap_resource(&pdev->dev, res);
 	
 	display_np = of_parse_phandle(pdev->dev.of_node, "display", 0);
-
-	of_property_read_u32(display_np, "bits-per-pixel", &bits_per_pixel);
-	of_property_read_u32(display_np, "bus-width", &bus_width);
-	
 	timings = of_get_display_timings(display_np);
 	dt = timings->timings[timings->native_mode];
 
+	of_property_read_u32(display_np, "bits-per-pixel", &bits_per_pixel);
+	if (bits_per_pixel != 16)
+	{
+		printk(KERN_EMERG"not support %d bpp!\n", bits_per_pixel);
+		return -1;
+	}
+	
+	of_property_read_u32(display_np, "bus-width", &bus_width);
+	
 	clk_pix = devm_clk_get(&pdev->dev, "pix");
 	clk_axi = devm_clk_get(&pdev->dev, "axi");
 
@@ -202,24 +207,24 @@ static int lcd_driver_probe(struct platform_device *pdev)
 	lcdfb_info->var.vsync_len = dt->vsync_len.typ;
 	lcdfb_info->var.hsync_len = dt->hsync_len.typ;
 
-	/* LCD RGB格式设置, 这里使用的是RGB888 */		
-	lcdfb_info->var.red.offset   = 16;
-	lcdfb_info->var.red.length   = 8;
-	lcdfb_info->var.green.offset = 8;
-	lcdfb_info->var.green.length = 8;
+	/* LCD RGB格式设置, 这里使用的是RGB565 */		
+	lcdfb_info->var.red.offset   = 11;
+	lcdfb_info->var.red.length   = 5;
+	lcdfb_info->var.green.offset = 5;
+	lcdfb_info->var.green.length = 6;
 	lcdfb_info->var.blue.offset  = 0;
-	lcdfb_info->var.blue.length  = 8;		
+	lcdfb_info->var.blue.length  = 5;		
 	
 	
 	/* 设置固定参数 */
 	strcpy(lcdfb_info->fix.id, "fire,lcd");
 	lcdfb_info->fix.type   = FB_TYPE_PACKED_PIXELS;
 	lcdfb_info->fix.visual = FB_VISUAL_TRUECOLOR;
-	lcdfb_info->fix.line_length = dt->hactive.typ * 4;                    /* 当bpp=24时,每个像素占据4个字节            */
-	lcdfb_info->fix.smem_len	= dt->hactive.typ * dt->vactive.typ * 4;  
+	lcdfb_info->fix.line_length = dt->hactive.typ * bits_per_pixel / 8;                   
+	lcdfb_info->fix.smem_len	= dt->hactive.typ * dt->vactive.typ * bits_per_pixel / 8;  
 
 	/* 其他参数设置 */
-	lcdfb_info->screen_size = dt->hactive.typ * dt->vactive.typ * 4;
+	lcdfb_info->screen_size = dt->hactive.typ * dt->vactive.typ * bits_per_pixel / 8;
 
 	/* dma_alloc_writecombine：分配smem_len大小的内存，返回screen_base虚拟地址，对应的物理地址保存在smem_start */
 	lcdfb_info->screen_base = dma_alloc_writecombine(&pdev->dev, lcdfb_info->fix.smem_len, (dma_addr_t*)&lcdfb_info->fix.smem_start, GFP_KERNEL);

@@ -114,4 +114,13 @@
 			};
          };
      };
+
+    fragment@4 {
+        target=<&pwm1>;
+        __overlay__ {
+            pinctrl-names = "default";
+            pinctrl-0 = <&pinctrl_pwm1>;
+            status = "okay";
+        };
+    };
  };
